@@ -1,0 +1,28 @@
+{
+  "name": "tms-client",
+  "version": "1.0.0",
+  "description": "TMS (Teaching Management System) Frontend - Module 2: Type Safety and Domain Models",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --outDir dist",
+    "dev": "tsc --watch",
+    "verify-config": "tsc --showConfig",
+    "start": "npm run build && node dist/index.js"
+  },
+  "keywords": [
+    "TypeScript",
+    "TMS",
+    "Type Safety",
+    "Domain Models",
+    "Type Guards"
+  ],
+  "author": "TMS Frontend Team",
+  "license": "MIT",
+  "dependencies": {
+    "@js-temporal/polyfill": "^0.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.0"
+  }
+}

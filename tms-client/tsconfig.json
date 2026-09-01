@@ -1,0 +1,151 @@
+{
+  // ============================================================================
+  // MODULE 2: Type Safety and Domain Models - TypeScript Configuration
+  // ============================================================================
+  // 
+  // EXERCISE 1: Enforcing Strict Mode
+  // 
+  // Situation: The existing TMS frontend used strict: false, which allowed type
+  // errors to slip through. A grade input "85" > "9" evaluated to false (string
+  // comparison compares character codes), causing 85% to appear below 9% on the
+  // grade dashboard for an entire semester.
+  // 
+  // Solution: Enable strict: true to force the compiler to flag type errors
+  // before the code ever runs. This is the TypeScript equivalent of enabling
+  // <Nullable>enable</Nullable> in C#.
+  // 
+  // Decision Rule:
+  // - Always enable strict: true in tsconfig.json. This is non-negotiable for
+  //   production TypeScript.
+  // - Enable noUncheckedIndexedAccess separately - it catches bugs that even
+  //   strict: true misses (array access returning undefined).
+  // 
+  // Trade-off: Strict mode produces more compiler errors on day one. That is
+  // the point. Each error is a bug you would have shipped silently in plain
+  // JavaScript. Fix the code, not the config.
+  // ============================================================================
+
+  "compilerOptions": {
+    // TARGET: What JavaScript version should we compile to?
+    // "es2024" - Latest stable JavaScript features, requires modern runtimes
+    // Use "es2020" for broader Node.js compatibility
+    "target": "es2024",
+
+    // MODULE SYSTEM: How should modules be imported/exported?
+    // "nodenext" - Use modern Node.js module resolution with ES modules
+    // Allows: import { Student } from "./models/student.model"
+    "module": "nodenext",
+
+    // OUTPUT DIRECTORY: Where should compiled .js files go?
+    // TypeScript transpiles .ts files to .js files in this directory
+    "outDir": "./dist",
+
+    // SOURCE MAPS: Generate .map files for debugging compiled JavaScript
+    // Allows debuggers to map JavaScript errors back to TypeScript source
+    "sourceMap": true,
+
+    // ========================================================================
+    // STRICT MODE FLAGS: The core of type safety
+    // ========================================================================
+    // These flags work together to catch type errors at compile time.
+    // If any flag is false, you lose safety guarantees.
+
+    // STRICT: Meta-flag that enables all strict-related checks
+    // Equivalent to enabling: noImplicitAny, strictNullChecks,
+    // strictFunctionTypes, strictBindCallApply, strictPropertyInitialization,
+    // noImplicitThis, alwaysStrict
+    "strict": true,
+
+    // NOIMPLICITANY: Variables must have explicit types
+    // Without this, function parameters and variables can be 'any'
+    // Example - FORBIDDEN:
+    //   function process(data) { } // Error: parameter 'data' has implicit any
+    // Example - REQUIRED:
+    //   function process(data: unknown) { } // OK: explicit type
+    "noImplicitAny": true,
+
+    // STRICTNULLCHECKS: null and undefined are distinct types
+    // Without this, null is valid for any type (very dangerous)
+    // Example - FORBIDDEN:
+    //   const gpa: number = null; // Error: null is not assignable to number
+    // Example - REQUIRED:
+    //   const gpa: number | null = null; // OK: explicit union type
+    //   const gpa: number | undefined; // OK: optional
+    "strictNullChecks": true,
+
+    // NOUNCHECKEDINDEXEDACCESS: Array access must be checked for undefined
+    // Without this, array[index] is assumed to exist (it might not)
+    // Example - FORBIDDEN:
+    //   const arr: number[] = [1, 2, 3];
+    //   const x = arr[10].toFixed(2); // Error: arr[10] could be undefined
+    // Example - REQUIRED:
+    //   const x = arr[10]?.toFixed(2); // OK: safe access with optional chaining
+    "noUncheckedIndexedAccess": true,
+
+    // STRICTFUNCTIONTYPES: Function parameter types are checked strictly
+    // Prevents assigning incompatible functions to function variables
+    "strictFunctionTypes": true,
+
+    // STRICTNULLCHECKS: null and undefined are NOT implicitly assignable
+    "strictNullChecks": true,
+
+    // STRICTPROPERTYINITIALIZATION: Class properties must be initialized
+    // in constructor or declared with initial values
+    // Example - FORBIDDEN:
+    //   class Student {
+    //     name: string; // Error: Property 'name' has no initializer
+    //   }
+    // Example - REQUIRED:
+    //   class Student {
+    //     name: string; // OK if initialized in constructor
+    //     constructor(name: string) { this.name = name; }
+    //   }
+    "strictPropertyInitialization": true,
+
+    // ========================================================================
+    // ADDITIONAL TYPE CHECKING FLAGS
+    // ========================================================================
+
+    // NOITYPES: Warn when types need to be installed separately
+    "noImplicitReturns": true,
+
+    // ALWAYSSTRICT: Add "use strict" to every generated file
+    "alwaysStrict": true,
+
+    // ESMODULEINTEROP: Better compatibility with non-ES modules
+    "esModuleInterop": true,
+
+    // SKIPLIBRARYCHECK: Don't type-check .d.ts files from node_modules
+    "skipLibCheck": true,
+
+    // FORCECONSISENTZLMITTEDCHECK: Ensure consistent behavior with incomplete types
+    "forceConsistentCasingInFileNames": true,
+
+    // MODULERESOLUTION: How should TypeScript resolve module imports?
+    // "NodeNext" - Use modern Node.js resolution algorithm (required with nodenext module)
+    "moduleResolution": "NodeNext",
+
+    // RESOLVEYJSONMODULE: Allow importing JSON files as modules
+    "resolveJsonModule": true,
+
+    // DECLARATION: Generate .d.ts files for type information
+    // Useful for libraries published to npm
+    "declaration": true,
+
+    // DECLARATIONMAP: Generate .d.ts.map files for declaration source maps
+    "declarationMap": true
+  },
+
+  // Specify which files TypeScript should check
+  "include": [
+    "index.ts",
+    "models/**/*.ts"
+  ],
+
+  // Exclude node_modules and build artifacts
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ]
+}
